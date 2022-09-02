@@ -7,28 +7,27 @@
     <title>Qwak</title>
 </head>
 <body>
-<<<<<<< HEAD
-  <qwak-app user>
+  <qwak-app>
     <div class = "rel">
       <div class = "login">
         <div class = "icon"></div>
-        <div id = "recaptcha-container">
-          recap
-        </div>
+        <input />
+        <div id = "recap"></div>
       </div>
       <qwak-editor>
       </qwak-editor>
     </div>
   </qwak-app>
-=======
-    
-
-    <script src="main.js"></script>
->>>>>>> bcc2ecd0355a927e6d23ef5ea75f7c53f3e161ff
 </body>
 
-<script>
-
+<script type = "module">
+  import {onUpdate, signin} from "./config/firebaseStorigeConfig.js";
+  onUpdate((user) => {
+    document.querySelector("qwak-app").toggleAttribute("user", user)
+  })
+  document.querySelector("qwak-app .login .icon").addEventListener("click", () => {
+    signin();
+  })
 </script>
 
 <style>

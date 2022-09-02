@@ -1,12 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/9.9.3/database";
-import { firebaseConfig } from "./config";
-import { getAuth, RecaptchaVerifier } from "firebase/auth";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js";
+import { firebaseConfig } from "./config.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js";
 
 var updateHandler;
 var userSignedIn;
 
-function onUpdate(callback){
+export function onUpdate(callback){
   updateHandler = callback;
   Update(userSignedIn);
 };
@@ -19,69 +19,43 @@ function Update(e){
 
 
 
-//storige connection
-function configstorige(){
-
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
 
 
-    // Initialize Realtime Database and get a reference to the service
-    const database = getDatabase(app);
-}
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-export {configstorige};
-
-
-
-//reCAPTCHA Authentication
-import { getAuth } from "firebase/auth";
-
-const auth = getAuth();
-auth.languageCode = 'it';
-
+// Initialize Realtime Database and get a reference to the service
+const database = getDatabase(app);
 
 //reCAPTCHA widget
 const auth = getAuth();
-window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+const recap = document.querySelector("#recap");
+const appVerifier = new RecaptchaVerifier(recap, {
   'size': 'normal',
-  'callback': (response) => {
-    
-  },
-  'expired-callback': () => {
-    
-  }
 }, auth);
 
-//text to phone
-const phoneNumber = getPhoneNumberFromUserInput();
-const appVerifier = window.recaptchaVerifier;
+export async function signin() {
+  try {
 
-const auth = getAuth();
-signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-    .then((confirmationResult) => {
-      // SMS sent. Prompt user to type the code from the message, then sign the
-      // user in with confirmationResult.confirm(code).
-      window.confirmationResult = confirmationResult;
-      const code = getCodeFromUserInput();
-      confirmationResult.confirm(code).then((result) => {
-        // User signed in successfully.
-        const user = result.user;
-        userSignedIn = true;
-        Update(true);
-        // ...
-      }).catch((error) => {
-        // User couldn't sign in (bad verification code?)
-        // ...
-        console.log(error);
-      });
-    }).catch((error) => {
-      grecaptcha.reset(window.recaptchaWidgetId);
-
-      // Or, if you haven't stored the widget ID:
-      window.recaptchaVerifier.render().then(function(widgetId) {
-        grecaptcha.reset(widgetId);
-      });
-    });
+    //text to phone
+    const phoneNumber = "+61492840426"; //getPhoneNumberFromUserInput();
 
 
+    let confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+    // SMS sent. Prompt user to type the code from the message, then sign the
+    // user in with confirmationResult.confirm(code).
+    window.confirmationResult = confirmationResult;
+    const code = getCodeFromUserInput();
+    let results = await confirmationResult.confirm(code)
+    // User signed in successfully.
+    const user = result.user;
+    userSignedIn = true;
+    Update(true);
+  } catch(e) {
+    console.log(e);
+    // recaptcha.reset(window.recaptchaWidgetId);
+    // // Or, if you haven't stored the widget ID:
+    // let widgetId = await window.recaptchaVerifier.render()
+    // grecaptcha.reset(widgetId);
+  }
+}
