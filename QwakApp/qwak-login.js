@@ -6,8 +6,8 @@ export class QwakLogin extends SvgPlus{
     super("qwak-login");
     this.icon = this.createChild("div", {class: "icon"});
     this.inputForm = this.createChild("div", {class: "input-form"});
-    this.recaptcha = this.createChild("div");
-
+    this.captchaBox = this.createChild("div");
+    this.signing = true;
     this.icon.onclick = () => {
       if (this.user) {
         signout();
@@ -22,14 +22,18 @@ export class QwakLogin extends SvgPlus{
   }
 
   async signIn(){
-    if (!this.captcha) {
-      this.captcha = makeCapture(this.recaptcha);
-    }
+    this.signing = true;
     let number = await this.getValue("number");
-    let confirmationResult = await sendPhoneNumberCode(number, this.captcha);
-    let code = await this.getValue("code");
-    let user = await confirmPhoneNumberCode(code, confirmationResult);
     this.clearInput();
+
+    let captchaEl = this.createChild("div");
+    let captcha = makeCapture(captchaEl);
+    let confirmationResult = await sendPhoneNumberCode(number, captcha);
+    captchaEl.remove();
+
+    let code = await this.getValue("code");
+    this.clearInput();
+    let user = await confirmPhoneNumberCode(code, confirmationResult);
     this.user = user;
   }
 
@@ -56,12 +60,17 @@ export class QwakLogin extends SvgPlus{
     });
   }
 
+
   set locked(value){
     this.toggleAttribute("locked", value)
+  }
+  set signing(value){
+    this.toggleAttribute("signing", value)
   }
   set user(value) {
     this.toggleAttribute("user", value);
     this._user = value;
+    this.signing = false;
   }
   get user() {
     return this._user;
