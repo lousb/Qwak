@@ -7,6 +7,64 @@
     <title>Qwak</title>
 </head>
 <body>
-    
+  <qwak-app user>
+    <div class = "rel">
+      <div class = "login">
+        <div class = "icon"></div>
+        <div id = "recaptcha-container">
+          recap
+        </div>
+      </div>
+      <qwak-editor>
+      </qwak-editor>
+    </div>
+  </qwak-app>
 </body>
+
+<script>
+
+</script>
+
+<style>
+
+  qwak-app {
+    --login-c: black;
+    --g1: 5px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .rel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  qwak-app[user] .login .icon {
+    fill: var(--login-c);
+  }
+
+  .login {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    align-items: flex-end;
+    top: 0;
+    right: 0;
+    left:0;
+    margin: var(--g1);
+  }
+
+  .login .icon {
+    border: 2px solid var(--login-c);
+    border-radius: 20px;
+    width: 1em;
+    height: 1em;
+  }
+
+</style>
 </html>
