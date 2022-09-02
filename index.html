@@ -5,35 +5,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qwak</title>
+    <script type = "module" src = "QwakApp/qwak-app.js"></script>
 </head>
 <body>
   <qwak-app>
     <div class = "rel">
-      <div class = "login">
+      <qwak-login>
         <div class = "icon"></div>
-        <input />
+        <div>
+          <input /> <div>send</div>
+        </div>
         <div id = "recap"></div>
-      </div>
+      </qwak-login>
       <qwak-editor>
       </qwak-editor>
     </div>
   </qwak-app>
 </body>
 
-<script type = "module">
-  import {onUpdate, signin} from "./config/firebaseStorigeConfig.js";
-  onUpdate((user) => {
-    document.querySelector("qwak-app").toggleAttribute("user", user)
-  })
-  document.querySelector("qwak-app .login .icon").addEventListener("click", () => {
-    signin();
-  })
-</script>
-
 <style>
 
   qwak-app {
     --login-c: black;
+    --input-c: #77646422;
     --g1: 5px;
 
     position: fixed;
@@ -49,11 +43,7 @@
     height: 100%;
   }
 
-  qwak-app[user] .login .icon {
-    fill: var(--login-c);
-  }
-
-  .login {
+  qwak-login {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -62,13 +52,36 @@
     right: 0;
     left:0;
     margin: var(--g1);
+    gap: var(--g1);
+    font-size: 16pt;
   }
 
-  .login .icon {
+  qwak-login .input-form {
+    display: flex;
+    align-items: center;
+    gap: var(--g1);
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  qwak-login input {
+    font: inherit;
+    margin: 0;
+    border: none;
+    outline: none;
+    /* border-bottom: 1.5px solid black; */
+    background: var(--input-c);
+    width: 100%;
+  }
+
+  qwak-login .icon {
     border: 2px solid var(--login-c);
     border-radius: 20px;
     width: 1em;
     height: 1em;
+  }
+  qwak-login[user] .icon {
+    background: var(--login-c);
   }
 
 </style>
